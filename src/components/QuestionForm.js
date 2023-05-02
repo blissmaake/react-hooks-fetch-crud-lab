@@ -1,25 +1,32 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
 function QuestionForm(props) {
+  const answerObj = { answer1: "", answer2: "", answer3: "", answer4: "" }
   const [formData, setFormData] = useState({
     prompt: "",
-    answer1: "",
-    answer2: "",
-    answer3: "",
-    answer4: "",
+    answers: [Object.values(answerObj)],
     correctIndex: 0,
-  });
+  })
 
   function handleChange(event) {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
-    });
+    })
   }
 
   function handleSubmit(event) {
-    event.preventDefault();
-    console.log(formData);
+    event.preventDefault()
+
+    fetch("http://localhost:4000/questions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((r) => r.json())
+      .then((data) => props.onAddQuestion(data))
   }
 
   return (
@@ -40,7 +47,7 @@ function QuestionForm(props) {
           <input
             type="text"
             name="answer1"
-            value={formData.answer1}
+            value={formData.answers[1]}
             onChange={handleChange}
           />
         </label>
@@ -49,7 +56,7 @@ function QuestionForm(props) {
           <input
             type="text"
             name="answer2"
-            value={formData.answer2}
+            value={formData.answers[2]}
             onChange={handleChange}
           />
         </label>
@@ -58,7 +65,7 @@ function QuestionForm(props) {
           <input
             type="text"
             name="answer3"
-            value={formData.answer3}
+            value={formData.answers[3]}
             onChange={handleChange}
           />
         </label>
@@ -67,7 +74,7 @@ function QuestionForm(props) {
           <input
             type="text"
             name="answer4"
-            value={formData.answer4}
+            value={formData.answers[4]}
             onChange={handleChange}
           />
         </label>
@@ -87,7 +94,7 @@ function QuestionForm(props) {
         <button type="submit">Add Question</button>
       </form>
     </section>
-  );
+  )
 }
 
-export default QuestionForm;
+export default QuestionForm
